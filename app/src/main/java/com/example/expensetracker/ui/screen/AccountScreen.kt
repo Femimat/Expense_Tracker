@@ -27,7 +27,7 @@ fun AccountScreen(
 ) {
     val assets = accounts.filter { !it.isLiability }.sumOf { it.balance }
     val liabilities = accounts.filter { it.isLiability }.sumOf { it.balance }
-    val balance = assets - liabilities
+    val total = assets - liabilities
     val currency = NumberFormat.getCurrencyInstance(Locale.UK)
 
     Scaffold(
@@ -48,10 +48,12 @@ fun AccountScreen(
                 .fillMaxSize()
         ) {
 
+            Spacer(Modifier.height(5.dp))
+
             SummaryHeadActs(
                 assets = assets,
                 liabilities = liabilities,
-                balance = balance,
+                total = total,
                 currency = currency
             )
 

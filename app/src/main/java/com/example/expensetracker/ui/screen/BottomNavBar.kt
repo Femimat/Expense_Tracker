@@ -105,7 +105,9 @@ fun BottomNavBar() {
                 TransactionScreen(transactions = sampleTransactions, onAddClick = { navController.navigate("addTransaction") })
             }
 
-            composable(BottomDestination.STATS.route) { Text("Stats Screen") }
+            composable(BottomDestination.STATS.route) {
+                StatsScreen()
+            }
 
             composable(BottomDestination.ACCOUNTS.route) {
                 AccountScreen(accounts = sampleAccounts, onAddClick = {navController.navigate("addAccount")}, onShowHideClick =  {}, onDeleteClick = {}, onModifyOrdersClick = {})

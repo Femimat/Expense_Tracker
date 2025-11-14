@@ -7,10 +7,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.expensetracker.ui.theme.getTextPrimaryColor
+import com.example.expensetracker.ui.theme.getTextSecondaryColor
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -18,24 +21,64 @@ import java.util.Locale
 fun SummaryHeadActs(
     assets: Double,
     liabilities: Double,
-    balance: Double,
+    total: Double,
     currency: NumberFormat
 ) {
+
+    val textPrimary = getTextPrimaryColor()
+    val textSecondary = getTextSecondaryColor()
+
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        Column {
-            Text("Assets", color = MaterialTheme.colorScheme.primary)
-            Text(currency.format(assets), color = Color.Blue)
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(
+                "Assets",
+                color = textSecondary,
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Text(
+                currency.format(assets),
+                color = Color(0xFF2196F3),
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.titleSmall
+            )
         }
-        Column {
-            Text("Liabilities", color = MaterialTheme.colorScheme.primary)
-            Text(currency.format(liabilities), color = Color.Red)
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(
+                "Liabilities",
+                color = textSecondary,
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Text(
+                currency.format(liabilities),
+                color = Color(0xFFF44336),
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.titleSmall
+            )
         }
-        Column {
-            Text("Balance", fontWeight = FontWeight.Bold)
-            Text(currency.format(balance))
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(
+                "Total",
+                color = textSecondary,
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Text(
+                currency.format(total),
+                color = textPrimary,
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.titleSmall
+            )
         }
     }
 }
@@ -49,7 +92,7 @@ fun SummaryHeadActsPreview() {
     SummaryHeadActs(
         assets = 7500.0,
         liabilities = 3300.0,
-        balance = 5200.0,
+        total = 5200.0,
         currency = currency
     )
 }

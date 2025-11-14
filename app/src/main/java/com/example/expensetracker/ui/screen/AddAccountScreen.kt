@@ -2,7 +2,8 @@ package com.example.expensetracker.ui.screen
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
@@ -10,9 +11,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.expensetracker.ui.popUp.AccountPopupDialog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,70 +53,163 @@ fun AddAccountScreen(
             horizontalAlignment = Alignment.Start
         ) {
 
-            OutlinedTextField(
-                value = group ?: "",
-                onValueChange = {},
-                label = { Text("Group") },
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { showPopup = true },
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color.Red,
-                    unfocusedBorderColor = Color.Gray,
-                    focusedLabelColor = Color.Red,
-                    unfocusedLabelColor = Color.Gray
+                    .clickable { showPopup = true }
+                    .padding(vertical = 12.dp),
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Group",
+                    color = Color.Gray,
+                    fontSize = 15.sp,
+                    modifier = Modifier.width(80.dp)
                 )
+                BasicTextField(
+                    value = group ?: "",
+                    onValueChange = { group = it },
+                    textStyle = androidx.compose.ui.text.TextStyle(
+                        color = Color.Gray,
+                        fontSize = 15.sp
+                    ),
+                    modifier = Modifier.weight(1f),
+                    singleLine = true,
+                    cursorBrush = androidx.compose.ui.graphics.SolidColor(Color(0xFF4C9AFF)),
+                    decorationBox = { innerTextField ->
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            innerTextField()
+                        }
+                    }
+                )
+            }
+            HorizontalDivider(
+                color = if (group.isNullOrEmpty()) Color(0xFF3D3D3D) else Color(0xFFFF6E6E),
+                thickness = 1.dp
             )
 
-            Spacer(Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
-            OutlinedTextField(
-                value = name,
-                onValueChange = { name = it },
-                label = { Text("Name") },
+            Row(
                 modifier = Modifier
-                    .fillMaxWidth(),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color.Red,
-                    unfocusedBorderColor = Color.Gray,
-                    focusedLabelColor = Color.Red,
-                    unfocusedLabelColor = Color.Gray,
-                ),
+                    .fillMaxWidth()
+                    .padding(vertical = 12.dp),
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Name",
+                    color = Color.Gray,
+                    fontSize = 15.sp,
+                    modifier = Modifier.width(80.dp)
+                )
+                BasicTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    textStyle = androidx.compose.ui.text.TextStyle(
+                        color = Color.Gray,
+                        fontSize = 15.sp
+                    ),
+                    modifier = Modifier.weight(1f),
+                    singleLine = true,
+                    cursorBrush = androidx.compose.ui.graphics.SolidColor(Color(0xFF4C9AFF)),
+                    decorationBox = { innerTextField ->
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            innerTextField()
+                        }
+                    }
+                )
+            }
+            HorizontalDivider(
+                color = if (name.isEmpty()) Color(0xFF3D3D3D) else Color(0xFFFF6E6E),
+                thickness = 1.dp
             )
 
-            Spacer(Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
-            OutlinedTextField(
-                value = amount,
-                onValueChange = { amount = it },
-                label = { Text("Amount") },
-                modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color.Red,
-                    unfocusedBorderColor = Color.Gray,
-                    focusedLabelColor = Color.Red,
-                    unfocusedLabelColor = Color.Gray,
-                    focusedTextColor = Color.Cyan
-                ),
+            // Amount Row
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 12.dp),
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Amount",
+                    color = Color.Gray,
+                    fontSize = 15.sp,
+                    modifier = Modifier.width(80.dp)
+                )
+                BasicTextField(
+                    value = amount,
+                    onValueChange = { amount = it },
+                    textStyle = androidx.compose.ui.text.TextStyle(
+                        color = Color.Gray,
+                        fontSize = 15.sp
+                    ),
+                    modifier = Modifier.weight(1f),
+                    singleLine = true,
+                    cursorBrush = androidx.compose.ui.graphics.SolidColor(Color(0xFF4C9AFF)),
+                    decorationBox = { innerTextField ->
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            innerTextField()
+                        }
+                    }
+                )
+            }
+            HorizontalDivider(
+                color = if (amount.isEmpty()) Color(0xFF3D3D3D) else Color(0xFFFF6E6E),
+                thickness = 1.dp
             )
 
-            Spacer(Modifier.height(10.dp))
-
-            OutlinedTextField(
-                value = description,
-                onValueChange = { description = it },
-                label = { Text("Description") },
-                modifier = Modifier.fillMaxWidth(),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color.Red,
-                    unfocusedBorderColor = Color.Gray,
-                    focusedLabelColor = Color.Red,
-                    unfocusedLabelColor = Color.Gray
-                ),
+            Spacer(modifier = Modifier.height(20.dp))
+            // description Row
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 12.dp),
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Description",
+                    color = Color.Gray,
+                    fontSize = 15.sp,
+                    modifier = Modifier.width(80.dp)
+                )
+                BasicTextField(
+                    value = description,
+                    onValueChange = { description = it },
+                    textStyle = androidx.compose.ui.text.TextStyle(
+                        color = Color.Gray,
+                        fontSize = 15.sp
+                    ),
+                    modifier = Modifier.weight(1f),
+                    singleLine = true,
+                    cursorBrush = androidx.compose.ui.graphics.SolidColor(Color(0xFF4C9AFF)),
+                    decorationBox = { innerTextField ->
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            innerTextField()
+                        }
+                    }
+                )
+            }
+            HorizontalDivider(
+                color = if (description.isEmpty()) Color(0xFF3D3D3D) else Color(0xFFFF6E6E),
+                thickness = 1.dp
             )
 
-            Spacer(Modifier.height(10.dp))
+            Spacer(Modifier.height(30.dp))
 
             Button(
                 onClick = {
@@ -123,8 +218,10 @@ fun AddAccountScreen(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+                    .height(46.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF6E6E)
+                ),
+                shape = RoundedCornerShape(8.dp)
             ) {
                 Text("Save", color = MaterialTheme.colorScheme.onPrimary)
             }
@@ -132,7 +229,7 @@ fun AddAccountScreen(
 
         if (showPopup) {
             AccountPopupDialog(
-                onDismiss = {  showPopup = false },
+                onDismiss = { showPopup = false },
                 onGroupSelected = {
                     group = it
                     showPopup = true
