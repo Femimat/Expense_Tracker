@@ -34,7 +34,7 @@ import com.example.expensetracker.ui.form.TransferForm
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddTransactionScreen(
-    onSaveClick: ()  -> Unit,
+    onSaveClick: () -> Unit,
     onBackClick: () -> Unit
 ) {
     var selectedTab by remember { mutableIntStateOf(0) }

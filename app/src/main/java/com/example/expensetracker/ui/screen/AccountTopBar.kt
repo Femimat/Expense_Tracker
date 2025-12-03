@@ -29,7 +29,7 @@ fun AccountTopBar(
     var menuExpanded by remember { mutableStateOf(false) }
 
     TopAppBar(
-        title = { Text("Accounts", fontSize = 18.sp) },
+        title = { Text("Accounts", fontSize = 16.sp) },
         actions = {
             IconButton(onClick = { menuExpanded = true }) {
                 Icon(Icons.Default.MoreVert, contentDescription = "Menu")

@@ -45,7 +45,9 @@ fun AccountItem(
                     fontSize = 24.sp
                 )
             }
+
             Spacer(modifier = Modifier.height(4.dp))
+
             Text(
                 text = account.name,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,

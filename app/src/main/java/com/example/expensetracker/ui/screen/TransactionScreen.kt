@@ -28,6 +28,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import java.time.YearMonth
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -36,6 +38,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.expensetracker.calender.CalenderView
+import com.example.expensetracker.calender.MonthlyView
 import com.example.expensetracker.model.Transaction
 import com.example.expensetracker.ui.theme.getTextPrimaryColor
 import com.example.expensetracker.ui.theme.getTextSecondaryColor
@@ -44,16 +48,31 @@ import java.util.Locale
 
 @Composable
 fun TransactionScreen(transactions: List<Transaction>, onAddClick: () -> Unit) {
-    val income = transactions.filter {it.type == "Income" }.sumOf { it.amount }
-    val expense = transactions.filter { it.type == "Expense" }.sumOf { it.amount }
-    val total = income - expense
+    var currentYearMonth by remember { mutableStateOf(YearMonth.now()) }
+    var selectedTab by remember { mutableIntStateOf(0) }
+    val tabs = listOf("Daily", "Calendar", "Monthly", "Total", "Note")
     val currency = NumberFormat.getCurrencyInstance(Locale.UK)
 
     val textPrimary = getTextPrimaryColor()
     val textSecondary = getTextSecondaryColor()
-    
-    var selectedTab by remember { mutableIntStateOf(0) }
-    val tabs = listOf("Daily", "Calendar", "Monthly", "Total", "Note")
+
+    val filteredTransactions = when (selectedTab) {
+        1 -> {
+            transactions.filter {
+                it.date?.startsWith("${currentYearMonth.year}-${String.format("%02d", currentYearMonth.monthValue)}") == true
+            }
+        }
+        2 -> {
+            transactions.filter {
+                it.date?.startsWith("${currentYearMonth.year}") == true
+            }
+        }
+        else -> transactions
+    }
+
+    val income = filteredTransactions.filter {it.type == "Income" }.sumOf { it.amount }
+    val expense = filteredTransactions.filter { it.type == "Expense" }.sumOf { it.amount }
+    val total = income - expense
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -66,7 +85,15 @@ fun TransactionScreen(transactions: List<Transaction>, onAddClick: () -> Unit) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = {}) {
+                IconButton(onClick = {
+                    currentYearMonth = when (selectedTab) {
+                        0 -> currentYearMonth.minusMonths(1)
+                        1 -> currentYearMonth.minusMonths(1)
+                        2 -> currentYearMonth.minusYears(1)
+                        4 -> currentYearMonth.minusMonths(1)
+                        else -> currentYearMonth
+                    }
+                }) {
                     Icon(
                         Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Previous",
@@ -74,12 +101,31 @@ fun TransactionScreen(transactions: List<Transaction>, onAddClick: () -> Unit) {
                     )
                 }
                 Text(
-                    text = "Nov 2025",
+                    text = when (selectedTab) {
+                        0 -> currentYearMonth.format(java.time.format.DateTimeFormatter.ofPattern("MMM yyyy"))
+                        1 -> currentYearMonth.format(java.time.format.DateTimeFormatter.ofPattern("MMM yyyy"))
+                        2 -> currentYearMonth.year.toString()
+                        3 -> "All Time"
+                        else -> currentYearMonth.format(
+                            java.time.format.DateTimeFormatter.ofPattern(
+                                "MMM yyyy"
+                            )
+                        )
+                    },
                     style = MaterialTheme.typography.titleMedium,
                     color = textPrimary,
                     fontWeight = FontWeight.Bold
                 )
-                IconButton(onClick = { /* Next month */ }) {
+
+                IconButton(onClick = {
+                    currentYearMonth = when (selectedTab) {
+                        0 -> currentYearMonth.plusMonths(1)
+                        1 -> currentYearMonth.plusMonths(1)
+                        2 -> currentYearMonth.plusYears(1)
+                        4 -> currentYearMonth.plusMonths(1)
+                        else -> currentYearMonth
+                    }
+                }) {
                     Icon(
                         Icons.AutoMirrored.Filled.ArrowForward,
                         contentDescription = "Next",
@@ -118,19 +164,50 @@ fun TransactionScreen(transactions: List<Transaction>, onAddClick: () -> Unit) {
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            SummaryHeader(
-                income = income,
-                expense = expense,
-                total = total,
-                currency = currency,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)
-            )
+            if (selectedTab != 3) {
+                SummaryHeader(
+                    income = income,
+                    expense = expense,
+                    total = total,
+                    currency = currency,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)
+                )
+                Spacer(Modifier.height(16.dp))
+            }
 
-            Spacer(Modifier.height(16.dp))
-
-            LazyColumn {
-                items(transactions) { tx ->
-                    ExpenseCard(expense = tx)
+            when (selectedTab) {
+                0 -> {
+                    LazyColumn {
+                        items(transactions) { tx ->
+                            ExpenseCard(expense = tx)
+                        }
+                    }
+                }
+                1 -> {
+                    CalenderView(
+                        yearMonth = currentYearMonth,
+                        transactions = transactions,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+                2 -> {
+                    MonthlyView(
+                        year = currentYearMonth.year,
+                        transactions = transactions
+                    )
+                }
+                3 -> {
+                    Column {
+                        SummaryHeader(
+                            income = transactions.filter { it.type == "Income" }.sumOf { it.amount },
+                            expense = transactions.filter { it.type == "Expense" }.sumOf { it.amount },
+                            total = transactions.filter { it.type == "Income" }.sumOf { it.amount } -
+                                    transactions.filter { it.type == "Expense" }.sumOf { it.amount },
+                            currency = currency,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)
+                        )
+                        TotalView(transactions = transactions)
+                    }
                 }
             }
         }

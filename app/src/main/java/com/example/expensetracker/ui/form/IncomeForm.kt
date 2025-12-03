@@ -80,7 +80,6 @@ fun IncomeForm(onSaveClick: () -> Unit) {
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-        // Date Row
         Row(
             modifier = Modifier
                 .fillMaxWidth()

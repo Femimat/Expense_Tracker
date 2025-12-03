@@ -23,6 +23,7 @@ fun AddAccountScreen(
     onSave: (String, Double, String) -> Unit,
     onCancel: () -> Unit
 ) {
+
     var name by remember { mutableStateOf("") }
     var amount by remember { mutableStateOf("") }
     var group by remember { mutableStateOf(selectedGroup) }
@@ -32,7 +33,7 @@ fun AddAccountScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Add Account") },
+                title = { Text("Add Account", fontSize = 16.sp) },
                 navigationIcon = {
                     IconButton(onCancel) {
                         Icon(
@@ -52,7 +53,6 @@ fun AddAccountScreen(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start
         ) {
-
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
